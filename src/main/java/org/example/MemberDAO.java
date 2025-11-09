@@ -79,3 +79,16 @@ public class MemberDAO {
             throw new RuntimeException("삭제 실패: " + e.getMessage(), e);
         }
     }
+
+    public Member findById(int id) {
+        final String sql = "SELECT id, create_date, student_id, name, position, year FROM team_members WHERE id=?";
+        try (Connection c = getConn(); PreparedStatement ps = c.prepareStatement(sql)) {
+            ps.setInt(1, id);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) return map(rs);
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException("조회 실패: " + e.getMessage(), e);
+        }
+        return null;
+    }
