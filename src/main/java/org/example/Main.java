@@ -78,3 +78,10 @@ public class Main {
         int rows = service.update(m);
         System.out.println(rows + "건 수정되었습니다.");
     }
+
+    private void remove() {
+        System.out.print("삭제할 id: ");
+        int id = readIntSafe();
+        int rows = service.delete(id);
+        System.out.println(rows + "건 삭제되었습니다.");
+    }
