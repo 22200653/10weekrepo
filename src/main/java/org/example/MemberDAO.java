@@ -146,3 +146,14 @@ public class MemberDAO {
         }
         return list;
     }
+
+    public List<Member> sortByCreateDateDesc() {
+        final String sql = "SELECT id, create_date, student_id, name, position, year FROM team_members ORDER BY datetime(create_date) DESC";
+        List<Member> list = new ArrayList<>();
+        try (Connection c = getConn(); PreparedStatement ps = c.prepareStatement(sql); ResultSet rs = ps.executeQuery()) {
+            while (rs.next()) list.add(map(rs));
+        } catch (SQLException e) {
+            throw new RuntimeException("정렬 실패: " + e.getMessage(), e);
+        }
+        return list;
+    }
