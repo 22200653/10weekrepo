@@ -34,3 +34,9 @@ public class Main {
             }
         }
     }
+
+    private void listAll() {
+        List<Member> list = service.getAll();
+        if (list.isEmpty()) System.out.println("데이터가 없습니다.");
+        else list.forEach(System.out::println);
+    }
