@@ -157,3 +157,14 @@ public class MemberDAO {
         }
         return list;
     }
+
+    public Map<Integer, Integer> countByYear() {
+        final String sql = "SELECT year, COUNT(*) AS cnt FROM team_members GROUP BY year ORDER BY year";
+        Map<Integer, Integer> map = new LinkedHashMap<>();
+        try (Connection c = getConn(); PreparedStatement ps = c.prepareStatement(sql); ResultSet rs = ps.executeQuery()) {
+            while (rs.next()) map.put(rs.getInt("year"), rs.getInt("cnt"));
+        } catch (SQLException e) {
+            throw new RuntimeException("통계 실패: " + e.getMessage(), e);
+        }
+        return map;
+    }
