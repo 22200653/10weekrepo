@@ -124,3 +124,8 @@ public class Main {
         System.out.println("학년별 인원수:");
         map.forEach((k,v)-> System.out.printf(" %d학년: %d명\n", k, v));
     }
+
+    private void export() {
+        String fname = service.exportAllToTimestampedFile();
+        System.out.println("내보내기 완료: " + fname);
+    }
