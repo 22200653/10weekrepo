@@ -7,38 +7,36 @@ import java.util.List;
 import java.util.Map;
 
 public class MemberDAO {
-    private static final String DB_URL = "jdbc:sqlite:team.db";
-
+    private static final String DB_URL = "jdbc:sqlite:myData.db";
 
     public MemberDAO() {
         init();
     }
-
 
     private Connection getConn() throws SQLException {
         return DriverManager.getConnection(DB_URL);
     }
 
     public final void init() {
-        final String sql = "CREATE TABLE IF NOT EXISTS team_members (" +
+        final String sql = "CREATE TABLE IF NOT EXISTS dataList (" +
                 "id INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                "create_date TEXT NOT NULL DEFAULT (datetime('now','localtime')), " +
-                "student_id TEXT NOT NULL, " +
+                "regdate TEXT NOT NULL DEFAULT (datetime('now','localtime')), " +
+                "stu_id TEXT NOT NULL, " +
                 "name TEXT NOT NULL, " +
                 "position TEXT NOT NULL, " +
-                "year INTEGER NOT NULL)";
+                "grade INTEGER NOT NULL)";
         try (Connection c = getConn(); Statement st = c.createStatement()) {
             st.execute(sql);
-            st.execute("CREATE INDEX IF NOT EXISTS idx_team_members_name ON team_members(name)");
-            st.execute("CREATE INDEX IF NOT EXISTS idx_team_members_year ON team_members(year)");
-            st.execute("CREATE INDEX IF NOT EXISTS idx_team_members_pos ON team_members(position)");
+            st.execute("CREATE INDEX IF NOT EXISTS idx_dataList_name ON dataList(name)");
+            st.execute("CREATE INDEX IF NOT EXISTS idx_dataList_grade ON dataList(grade)");
+            st.execute("CREATE INDEX IF NOT EXISTS idx_dataList_pos ON dataList(position)");
         } catch (SQLException e) {
             throw new RuntimeException("DB 초기화 실패: " + e.getMessage(), e);
         }
     }
 
     public int insert(Member m) {
-        final String sql = "INSERT INTO team_members(student_id, name, position, year) VALUES (?,?,?,?)";
+        final String sql = "INSERT INTO dataList(stu_id, name, position, grade) VALUES (?,?,?,?)";
         try (Connection c = getConn(); PreparedStatement ps = c.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
             ps.setString(1, m.getStudentId());
             ps.setString(2, m.getName());
@@ -48,7 +46,6 @@ public class MemberDAO {
             try (ResultSet rs = ps.getGeneratedKeys()) {
                 if (rs.next()) m.setId(rs.getInt(1));
             }
-// create_date는 DEFAULT 로컬타임으로 DB가 채움
             return rows;
         } catch (SQLException e) {
             throw new RuntimeException("추가 실패: " + e.getMessage(), e);
@@ -57,7 +54,7 @@ public class MemberDAO {
 
     public int update(Member m) {
         if (m.getId() == null) throw new IllegalArgumentException("id가 필요합니다");
-        final String sql = "UPDATE team_members SET student_id=?, name=?, position=?, year=? WHERE id=?";
+        final String sql = "UPDATE dataList SET stu_id=?, name=?, position=?, grade=? WHERE id=?";
         try (Connection c = getConn(); PreparedStatement ps = c.prepareStatement(sql)) {
             ps.setString(1, m.getStudentId());
             ps.setString(2, m.getName());
@@ -71,7 +68,7 @@ public class MemberDAO {
     }
 
     public int delete(int id) {
-        final String sql = "DELETE FROM team_members WHERE id=?";
+        final String sql = "DELETE FROM dataList WHERE id=?";
         try (Connection c = getConn(); PreparedStatement ps = c.prepareStatement(sql)) {
             ps.setInt(1, id);
             return ps.executeUpdate();
@@ -81,7 +78,7 @@ public class MemberDAO {
     }
 
     public Member findById(int id) {
-        final String sql = "SELECT id, create_date, student_id, name, position, year FROM team_members WHERE id=?";
+        final String sql = "SELECT id, regdate, stu_id, name, position, grade FROM dataList WHERE id=?";
         try (Connection c = getConn(); PreparedStatement ps = c.prepareStatement(sql)) {
             ps.setInt(1, id);
             try (ResultSet rs = ps.executeQuery()) {
@@ -94,7 +91,7 @@ public class MemberDAO {
     }
 
     public List<Member> findAll() {
-        final String sql = "SELECT id, create_date, student_id, name, position, year FROM team_members ORDER BY id";
+        final String sql = "SELECT id, regdate, stu_id, name, position, grade FROM dataList ORDER BY id";
         List<Member> list = new ArrayList<>();
         try (Connection c = getConn(); PreparedStatement ps = c.prepareStatement(sql); ResultSet rs = ps.executeQuery()) {
             while (rs.next()) list.add(map(rs));
@@ -106,7 +103,7 @@ public class MemberDAO {
 
     // ====== 부가기능 ======
     public List<Member> searchByName(String keyword) {
-        final String sql = "SELECT id, create_date, student_id, name, position, year FROM team_members WHERE name LIKE ? ORDER BY name";
+        final String sql = "SELECT id, regdate, stu_id, name, position, grade FROM dataList WHERE name LIKE ? ORDER BY name";
         List<Member> list = new ArrayList<>();
         try (Connection c = getConn(); PreparedStatement ps = c.prepareStatement(sql)) {
             ps.setString(1, "%" + keyword + "%");
@@ -120,7 +117,7 @@ public class MemberDAO {
     }
 
     public List<Member> filterByYear(int year) {
-        final String sql = "SELECT id, create_date, student_id, name, position, year FROM team_members WHERE year=? ORDER BY name";
+        final String sql = "SELECT id, regdate, stu_id, name, position, grade FROM dataList WHERE grade=? ORDER BY name";
         List<Member> list = new ArrayList<>();
         try (Connection c = getConn(); PreparedStatement ps = c.prepareStatement(sql)) {
             ps.setInt(1, year);
@@ -134,7 +131,7 @@ public class MemberDAO {
     }
 
     public List<Member> filterByPosition(String position) {
-        final String sql = "SELECT id, create_date, student_id, name, position, year FROM team_members WHERE position=? ORDER BY name";
+        final String sql = "SELECT id, regdate, stu_id, name, position, grade FROM dataList WHERE position=? ORDER BY name";
         List<Member> list = new ArrayList<>();
         try (Connection c = getConn(); PreparedStatement ps = c.prepareStatement(sql)) {
             ps.setString(1, position);
@@ -148,7 +145,7 @@ public class MemberDAO {
     }
 
     public List<Member> sortByCreateDateDesc() {
-        final String sql = "SELECT id, create_date, student_id, name, position, year FROM team_members ORDER BY datetime(create_date) DESC";
+        final String sql = "SELECT id, regdate, stu_id, name, position, grade FROM dataList ORDER BY datetime(regdate) DESC";
         List<Member> list = new ArrayList<>();
         try (Connection c = getConn(); PreparedStatement ps = c.prepareStatement(sql); ResultSet rs = ps.executeQuery()) {
             while (rs.next()) list.add(map(rs));
@@ -159,10 +156,10 @@ public class MemberDAO {
     }
 
     public Map<Integer, Integer> countByYear() {
-        final String sql = "SELECT year, COUNT(*) AS cnt FROM team_members GROUP BY year ORDER BY year";
+        final String sql = "SELECT grade, COUNT(*) AS cnt FROM dataList GROUP BY grade ORDER BY grade";
         Map<Integer, Integer> map = new LinkedHashMap<>();
         try (Connection c = getConn(); PreparedStatement ps = c.prepareStatement(sql); ResultSet rs = ps.executeQuery()) {
-            while (rs.next()) map.put(rs.getInt("year"), rs.getInt("cnt"));
+            while (rs.next()) map.put(rs.getInt("grade"), rs.getInt("cnt"));
         } catch (SQLException e) {
             throw new RuntimeException("통계 실패: " + e.getMessage(), e);
         }
@@ -172,11 +169,11 @@ public class MemberDAO {
     private Member map(ResultSet rs) throws SQLException {
         return new Member(
                 rs.getInt("id"),
-                rs.getString("create_date"),
-                rs.getString("student_id"),
+                rs.getString("regdate"),
+                rs.getString("stu_id"),
                 rs.getString("name"),
                 rs.getString("position"),
-                rs.getInt("year")
+                rs.getInt("grade")
         );
     }
 }
