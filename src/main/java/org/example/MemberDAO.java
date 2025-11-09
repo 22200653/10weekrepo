@@ -54,3 +54,18 @@ public class MemberDAO {
             throw new RuntimeException("추가 실패: " + e.getMessage(), e);
         }
     }
+
+    public int update(Member m) {
+        if (m.getId() == null) throw new IllegalArgumentException("id가 필요합니다");
+        final String sql = "UPDATE team_members SET student_id=?, name=?, position=?, year=? WHERE id=?";
+        try (Connection c = getConn(); PreparedStatement ps = c.prepareStatement(sql)) {
+            ps.setString(1, m.getStudentId());
+            ps.setString(2, m.getName());
+            ps.setString(3, m.getPosition());
+            ps.setInt(4, m.getYear());
+            ps.setInt(5, m.getId());
+            return ps.executeUpdate();
+        } catch (SQLException e) {
+            throw new RuntimeException("수정 실패: " + e.getMessage(), e);
+        }
+    }
