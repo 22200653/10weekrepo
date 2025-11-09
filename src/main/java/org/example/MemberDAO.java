@@ -92,3 +92,14 @@ public class MemberDAO {
         }
         return null;
     }
+
+    public List<Member> findAll() {
+        final String sql = "SELECT id, create_date, student_id, name, position, year FROM team_members ORDER BY id";
+        List<Member> list = new ArrayList<>();
+        try (Connection c = getConn(); PreparedStatement ps = c.prepareStatement(sql); ResultSet rs = ps.executeQuery()) {
+            while (rs.next()) list.add(map(rs));
+        } catch (SQLException e) {
+            throw new RuntimeException("전체 조회 실패: " + e.getMessage(), e);
+        }
+        return list;
+    }
