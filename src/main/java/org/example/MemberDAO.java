@@ -168,3 +168,15 @@ public class MemberDAO {
         }
         return map;
     }
+
+    private Member map(ResultSet rs) throws SQLException {
+        return new Member(
+                rs.getInt("id"),
+                rs.getString("create_date"),
+                rs.getString("student_id"),
+                rs.getString("name"),
+                rs.getString("position"),
+                rs.getInt("year")
+        );
+    }
+}
