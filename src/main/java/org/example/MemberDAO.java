@@ -36,3 +36,21 @@ public class MemberDAO {
             throw new RuntimeException("DB 초기화 실패: " + e.getMessage(), e);
         }
     }
+
+    public int insert(Member m) {
+        final String sql = "INSERT INTO team_members(student_id, name, position, year) VALUES (?,?,?,?)";
+        try (Connection c = getConn(); PreparedStatement ps = c.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+            ps.setString(1, m.getStudentId());
+            ps.setString(2, m.getName());
+            ps.setString(3, m.getPosition());
+            ps.setInt(4, m.getYear());
+            int rows = ps.executeUpdate();
+            try (ResultSet rs = ps.getGeneratedKeys()) {
+                if (rs.next()) m.setId(rs.getInt(1));
+            }
+// create_date는 DEFAULT 로컬타임으로 DB가 채움
+            return rows;
+        } catch (SQLException e) {
+            throw new RuntimeException("추가 실패: " + e.getMessage(), e);
+        }
+    }
