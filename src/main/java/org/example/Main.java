@@ -85,3 +85,11 @@ public class Main {
         int rows = service.delete(id);
         System.out.println(rows + "건 삭제되었습니다.");
     }
+
+    private void searchByName() {
+        System.out.print("이름 키워드: ");
+        String kw = sc.nextLine().trim();
+        List<Member> list = service.searchByName(kw);
+        if (list.isEmpty()) System.out.println("검색 결과가 없습니다.");
+        else list.forEach(System.out::println);
+    }
