@@ -129,3 +129,18 @@ public class Main {
         String fname = service.exportAllToTimestampedFile();
         System.out.println("내보내기 완료: " + fname);
     }
+
+    private int readIntSafe() {
+        while (true) {
+            String s = sc.nextLine().trim();
+            try { return Integer.parseInt(s); }
+            catch (NumberFormatException e) { System.out.print("숫자를 입력하세요: "); }
+        }
+    }
+
+
+    private String readOrKeep(String current) {
+        String s = sc.nextLine().trim();
+        return s.isEmpty() ? current : s;
+    }
+}
