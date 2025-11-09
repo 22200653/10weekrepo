@@ -112,3 +112,15 @@ public class Main {
                 System.out.println("올바른 유형을 입력하세요.");
         }
     }
+
+    private void sortByCreateDateDesc() {
+        service.sortByCreateDateDesc().forEach(System.out::println);
+    }
+
+
+    private void statsByYear() {
+        Map<Integer, Integer> map = service.countByYear();
+        if (map.isEmpty()) { System.out.println("데이터가 없습니다."); return; }
+        System.out.println("학년별 인원수:");
+        map.forEach((k,v)-> System.out.printf(" %d학년: %d명\n", k, v));
+    }
