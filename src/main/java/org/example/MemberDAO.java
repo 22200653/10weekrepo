@@ -69,3 +69,13 @@ public class MemberDAO {
             throw new RuntimeException("수정 실패: " + e.getMessage(), e);
         }
     }
+
+    public int delete(int id) {
+        final String sql = "DELETE FROM team_members WHERE id=?";
+        try (Connection c = getConn(); PreparedStatement ps = c.prepareStatement(sql)) {
+            ps.setInt(1, id);
+            return ps.executeUpdate();
+        } catch (SQLException e) {
+            throw new RuntimeException("삭제 실패: " + e.getMessage(), e);
+        }
+    }
