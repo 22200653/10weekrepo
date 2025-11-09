@@ -55,3 +55,26 @@ public class Main {
         int rows = service.add(new Member(sid, name, pos, year));
         System.out.println(rows + "건 추가되었습니다.");
     }
+
+    private void edit() {
+        System.out.print("수정할 id: ");
+        int id = readIntSafe();
+        Member m = service.getById(id);
+        if (m == null) { System.out.println("해당 id가 없습니다."); return; }
+
+
+        System.out.printf("학번(%s): ", m.getStudentId());
+        String sid = readOrKeep(m.getStudentId());
+        System.out.printf("이름(%s): ", m.getName());
+        String name = readOrKeep(m.getName());
+        System.out.printf("직책(%s): ", m.getPosition());
+        String pos = readOrKeep(m.getPosition());
+        System.out.printf("학년(%d): ", m.getYear());
+        String yrStr = sc.nextLine().trim();
+        int year = yrStr.isEmpty() ? m.getYear() : Integer.parseInt(yrStr);
+
+
+        m.setStudentId(sid); m.setName(name); m.setPosition(pos); m.setYear(year);
+        int rows = service.update(m);
+        System.out.println(rows + "건 수정되었습니다.");
+    }
