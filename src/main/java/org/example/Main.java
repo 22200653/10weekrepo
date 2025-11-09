@@ -93,3 +93,22 @@ public class Main {
         if (list.isEmpty()) System.out.println("검색 결과가 없습니다.");
         else list.forEach(System.out::println);
     }
+
+    private void filter() {
+        System.out.print("필터 유형 선택 (1=학년, 2=직책): ");
+        String type = sc.nextLine().trim();
+        switch (type) {
+            case "1":
+                System.out.print("학년(숫자): ");
+                int year = readIntSafe();
+                service.filterByYear(year).forEach(System.out::println);
+                break;
+            case "2":
+                System.out.print("직책: ");
+                String pos = sc.nextLine().trim();
+                service.filterByPosition(pos).forEach(System.out::println);
+                break;
+            default:
+                System.out.println("올바른 유형을 입력하세요.");
+        }
+    }
