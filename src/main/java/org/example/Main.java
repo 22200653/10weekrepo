@@ -40,3 +40,18 @@ public class Main {
         if (list.isEmpty()) System.out.println("데이터가 없습니다.");
         else list.forEach(System.out::println);
     }
+
+    private void add() {
+        System.out.print("학번: ");
+        String sid = sc.nextLine().trim();
+        System.out.print("이름: ");
+        String name = sc.nextLine().trim();
+        System.out.print("직책(예: 팀장/서기/회계): ");
+        String pos = sc.nextLine().trim();
+        System.out.print("학년(숫자): ");
+        int year = readIntSafe();
+
+
+        int rows = service.add(new Member(sid, name, pos, year));
+        System.out.println(rows + "건 추가되었습니다.");
+    }
