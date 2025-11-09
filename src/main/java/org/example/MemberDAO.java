@@ -132,3 +132,17 @@ public class MemberDAO {
         }
         return list;
     }
+
+    public List<Member> filterByPosition(String position) {
+        final String sql = "SELECT id, create_date, student_id, name, position, year FROM team_members WHERE position=? ORDER BY name";
+        List<Member> list = new ArrayList<>();
+        try (Connection c = getConn(); PreparedStatement ps = c.prepareStatement(sql)) {
+            ps.setString(1, position);
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) list.add(map(rs));
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException("직책 필터 실패: " + e.getMessage(), e);
+        }
+        return list;
+    }
