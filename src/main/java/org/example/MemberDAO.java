@@ -36,8 +36,11 @@ public class MemberDAO {
     }
 
     public int insert(Member m) {
-        final String sql = "INSERT INTO dataList(stu_id, name, position, grade) VALUES (?,?,?,?)";
-        try (Connection c = getConn(); PreparedStatement ps = c.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+        final String sql =
+                "INSERT INTO dataList(regdate, stu_id, name, position, grade) " +
+                        "VALUES (datetime('now','localtime'), ?, ?, ?, ?)";
+        try (Connection c = getConn();
+             PreparedStatement ps = c.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
             ps.setString(1, m.getStudentId());
             ps.setString(2, m.getName());
             ps.setString(3, m.getPosition());
@@ -51,6 +54,7 @@ public class MemberDAO {
             throw new RuntimeException("추가 실패: " + e.getMessage(), e);
         }
     }
+
 
     public int update(Member m) {
         if (m.getId() == null) throw new IllegalArgumentException("id가 필요합니다");
