@@ -118,3 +118,17 @@ public class MemberDAO {
         }
         return list;
     }
+
+    public List<Member> filterByYear(int year) {
+        final String sql = "SELECT id, create_date, student_id, name, position, year FROM team_members WHERE year=? ORDER BY name";
+        List<Member> list = new ArrayList<>();
+        try (Connection c = getConn(); PreparedStatement ps = c.prepareStatement(sql)) {
+            ps.setInt(1, year);
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) list.add(map(rs));
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException("학년 필터 실패: " + e.getMessage(), e);
+        }
+        return list;
+    }
